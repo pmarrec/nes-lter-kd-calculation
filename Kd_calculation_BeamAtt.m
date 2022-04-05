@@ -100,7 +100,7 @@ for n1=1:length(CRUISE)
             %get the depth, PAR and beam attenuation
             Depth=T.prDM;
             PAR=T.par;
-            Beam=T.CStarTr0;
+            Beam=T.CStarTr0/100;
             
             %Get the Kd values mdl_slope when PAR>10, and the mean Fluo/Beam
             %attenuation
