@@ -24,8 +24,7 @@ Output Variable: Kd_obs = light attenuation coefficient during day time; I0 = ca
 To run the Kd_calculation_BeamAtt.m, modify the following Paths:
 
 Line 30: 
-rep = 'C:/Users/pierr/Desktop/';
+rep = 'C:/Users/pierr/Desktop/PostDoc_URI_Desktop/NES-LTER/LTER_MLD_Kd_CTD/';
 
-Lines 61-62: 
-rep1 = 'C:\Users\pierr\Desktop\PostDoc_URI_Desktop\NES-LTER\LTER_MLD_Kd_CTD\en655\';
-addpath(rep1)
+Lines 61: 
+rep1 = strcat(rep,'en655');
