@@ -15,7 +15,7 @@ For Ar39b, no significant linear relationship between Kd and Beam Attenuation (A
 
 The final Kd to use as light attenuation coefficient is indicated in the last column of the output file. It corresponds to the Kd value obtained during daytime casts (if R2 log(PAR) vs. Depth >0.70) or to the Kd values obatined from nighttime cast from the Beam Attenuation (or if daytime R2 log(PAR) vs. Depth <0.70).
 
-Input files: REST-API CTD csv files or local ascii files for en655 and REST-API CTD metadata providing a list of casts for a given cruise.
+Input files: REST-API CTD csv files or cnv files for en655 from R2R (https://www.rvdata.us/search/cruise/EN655, except compromised casts 12 and 15) read using the readCnv function from US191/ctdPostProcessing https://github.com/US191/ctdPostProcessing.git and REST-API CTD metadata providing a list of casts for a given cruise.
 Input variable: PrDM = CTD Depth; Par = CTD PAR; CStarAt0 = CTD Beam Attenuation.
 
 Output files: CRUISE_Kd_PAR_BeamAtt.csv
