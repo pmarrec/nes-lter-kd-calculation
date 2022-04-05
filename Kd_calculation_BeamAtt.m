@@ -18,10 +18,26 @@
 % during daytime casts (if R2 log(PAR) vs. Depth >0.70) or to the Kd values
 % obatined from nighttime cast from the Beam Attenuation (or if daytime R2
 % log(PAR) vs. Depth <0.70).
-% Inputs: RESTAPI CTD csv files
-% Outputs: CRUISE_Kd_PAR_BeamAtt.csv
+% 
+% Input files: REST-API CTD csv files or cnv files for en655 from R2R 
+% (https://www.rvdata.us/search/cruise/EN655, 
+% except compromised casts 12 and 15) read using the readCnv function 
+% from US191/ctdPostProcessing (https://github.com/US191/ctdPostProcessing.git) 
+% and REST-API CTD metadata providing a list of casts for a given cruise. 
+% Input variable: PrDM = CTD Depth; Par = CTD PAR; CStarAt0 = CTD Beam Attenuation.
+% 
+% Output files: CRUISE_Kd_PAR_BeamAtt.csv 
+% Output Variable: Kd_obs = light attenuation coefficient during day time; 
+% I0 = calculated PAR value jsut below the surface; 
+% R2_PAR_Depth = R2 value of the linear regression between log(PAR) and Depth; 
+% BeamAttm = Mean beam attenuation (At) in the upper 10m; 
+% R2_Kd_BeamAtt = R2 value of the linear regression between Kd_obs and BeamAttm (1 value per cruise); 
+% Kd_mdl = Light attenuation value obtained from the Kd vs. BeamAtt linear regression; 
+% Kd = Final Kd value to use (K_obs during daytime, K_mdl during nighttime).
+% 
 % Authors: Pierre Marrec
 % Created on 04/04/2022
+%Modified on 04/05/2022
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clearvars, clc, close all
@@ -57,26 +73,35 @@ for n1=1:length(CRUISE)
         'double','double','double','double','double','double'},...
         'VariableNames',{'cast','Kd_obs','I0','R2_PAR_Depth','BeamAttm','R2_Kd_BeamAtt','Kd_mdl','Kd'});
 
-    if n1==3 %no CTD data for EN655 in the REST API, Data from local ascii files.
+    if n1==3 %no CTD data for EN655 in the REST API, Data from R2R
+        %https://www.rvdata.us/search/cruise/EN655
+        %No CTD cast 12 and 15
+        
         rep1 = strcat(rep,'en655/');%Where to get the raw pictures
         addpath(rep1)
-        ext = '*.asc';%File format
+        ext = '*.cnv';%File format
         chemin = fullfile(rep1,ext);
         list = dir(chemin);%List all bmp files in the directory
 
         for n2=1:numel(list)
 
 
-            %load the .asc files in a table format
+            %load the .cnv files in a table format using the readCnv
+            %function from US191/ctdPostProcessing
+            %https://github.com/US191/ctdPostProcessing.git
             FileName=list(n2).name;
+            C = strsplit(FileName,'_');
+            CASTNb=C{1,2};
+            castNb=str2double(CASTNb);
+            
 
-            T = load_asc(fullfile(rep1,list(n2).name));
+            T = readCnv(fullfile(rep1,list(n2).name));
 
             %get the depth, PAR and beam attenuation
-            Depth=T.PrDM;
-            PAR=T.Par;
-            Beam=T.CStarAt0;
-
+            Depth=T.prDM;
+            PAR=T.par;
+            Beam=T.CStarTr0;
+            
             %Get the Kd values mdl_slope when PAR>10, and the mean Fluo/Beam
             %attenuation
 
@@ -90,7 +115,7 @@ for n1=1:length(CRUISE)
                 mdl_slope=mdl.Coefficients{2,1};
                 mdl_intercept=mdl.Coefficients{1,1};
 
-                Results.cast(n2)=n2;
+                Results.cast(n2)=castNb;
                 Results.Kd_obs(n2)=-mdl_slope;
                 Results.I0(n2)=exp(mdl_intercept);
                 Results.R2_PAR_Depth(n2)=mdl_R2;
@@ -109,7 +134,7 @@ for n1=1:length(CRUISE)
                 mdl_slope=mdl.Coefficients{2,1};
                 mdl_intercept=mdl.Coefficients{1,1};
 
-                Results.cast(n2)=n2;
+                Results.cast(n2)=castNb;
                 Results.Kd_obs(n2)=-mdl_slope;
                 Results.I0(n2)=exp(mdl_intercept);
                 Results.R2_PAR_Depth(n2)=mdl_R2;
@@ -120,7 +145,7 @@ for n1=1:length(CRUISE)
 
             else
 
-                Results.cast(n2)=n2;
+                Results.cast(n2)=castNb;
                 Results.Kd_obs(n2)=nan;
                 Results.I0(n2)=nan;
                 Results.R2_PAR_Depth(n2)=nan;
