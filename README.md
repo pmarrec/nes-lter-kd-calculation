@@ -20,3 +20,12 @@ Input variable: PrDM = CTD Depth; Par = CTD PAR; CStarAt0 = CTD Beam Attenuation
 
 Output files: CRUISE_Kd_PAR_BeamAtt.csv
 Output Variable: Kd_obs = light attenuation coefficient during day time; I0 = calculated PAR value jsut below the surface; R2_PAR_Depth = R2 value of the linear regression between log(PAR) and Depth; BeamAttm = Mean beam attenuation (At) in the upper 10m;  R2_Kd_BeamAtt = R2 value of the linear regression between Kd_obs and BeamAttm (1 value per cruise); Kd_mdl = Light attenuation value obtained from the Kd vs. BeamAtt linear regression; Kd = Final Kd value to use (K_obs during daytime, K_mdl during nighttime). 
+
+To run the Kd_calculation_BeamAtt.m, modify the following Paths:
+
+Line 30: 
+rep = 'C:/Users/pierr/Desktop/';
+
+Lines 61-62: 
+rep1 = 'C:\Users\pierr\Desktop\PostDoc_URI_Desktop\NES-LTER\LTER_MLD_Kd_CTD\en655\';
+addpath(rep1)
