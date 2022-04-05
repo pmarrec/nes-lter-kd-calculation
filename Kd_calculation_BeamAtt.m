@@ -58,8 +58,8 @@ for n1=1:length(CRUISE)
         'VariableNames',{'cast','Kd_obs','I0','R2_PAR_Depth','BeamAttm','R2_Kd_BeamAtt','Kd_mdl','Kd'});
 
     if n1==3 %no CTD data for EN655 in the REST API, Data from local ascii files.
-        addpath('C:\Users\pierr\Desktop\PostDoc_URI_Desktop\NES-LTER\LTER_MLD_Kd_CTD\en655\')
         rep1 = 'C:\Users\pierr\Desktop\PostDoc_URI_Desktop\NES-LTER\LTER_MLD_Kd_CTD\en655\';%Where to get the raw pictures
+        addpath(rep1)
         ext = '*.asc';%File format
         chemin = fullfile(rep1,ext);
         list = dir(chemin);%List all bmp files in the directory
