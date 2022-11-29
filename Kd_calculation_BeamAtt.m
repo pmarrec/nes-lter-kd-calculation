@@ -37,7 +37,7 @@
 % 
 % Authors: Pierre Marrec
 % Created on 04/04/2022
-%Modified on 04/05/2022
+%Modified on 11/28/2022
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clearvars, clc, close all
@@ -48,7 +48,7 @@ rep = 'C:/Users/pierr/Desktop/PostDoc_URI_Desktop/NES-LTER/LTER_MLD_Kd_CTD/';
 RESTAPI='https://nes-lter-data.whoi.edu/api/ctd/';
 %Select the cruise you want. You need to create the corresponding folder in
 %your directory
-CRUISE={'en644';'en649';'en655';'ar39b';'en657';'en661';'en668'};
+CRUISE={'en644';'en649';'en655';'ar39b';'en657';'en661';'en668';'ar61b';'at46';'en687'};
 
 %Create  a cell to store the cast numbers of the different cruises
 CAST=cell(length(CRUISE),1);
@@ -81,7 +81,7 @@ for n1=1:length(CRUISE)
         addpath(rep1)
         ext = '*.cnv';%File format
         chemin = fullfile(rep1,ext);
-        list = dir(chemin);%List all bmp files in the directory
+        list = dir(chemin);%List all cnv files in the directory
 
         for n2=1:numel(list)
 
@@ -122,7 +122,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
                 %For station with depth <20-25m, all the CTD values are
                 %considered. It's a trcik to avoid considering variable length
@@ -141,7 +141,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
             else
 
@@ -152,7 +152,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
             end
 
@@ -199,7 +199,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
                 %For station with depth <20-25m, all the CTD values are
                 %considered. It's a trcik to avoid considering variable length
@@ -218,7 +218,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
             else
 
@@ -229,7 +229,7 @@ for n1=1:length(CRUISE)
 
                 a=find(Depth<11);
 
-                Results.BeamAttm(n2)=nanmean(Beam(a));
+                Results.BeamAttm(n2)=mean(Beam(a),'omitnan');
 
 
             end
@@ -247,11 +247,7 @@ for n1=1:length(CRUISE)
     mdl1_R2=mdl1.Rsquared.Ordinary;
     mdl1_slope=mdl1.Coefficients{2,1};
     mdl1_intercept=mdl1.Coefficients{1,1};
-    if mdl1_R2>0.7
-        Results.Kd_mdl=mdl1.Coefficients{2,1}*Results.BeamAttm+mdl1.Coefficients{1,1};
-    else
-        Results.Kd_mdl=nan(length(CAST{n1}),1);
-    end
+    Results.Kd_mdl=mdl1.Coefficients{2,1}*Results.BeamAttm+mdl1.Coefficients{1,1};
     %Store in the last Kd column, the Kd value (obs or mdl to use for a
     %given cast. If Kd_obs value available (daytime) with R2>0.7,
     %then Kd_obs value is conserved. If not, Kd_mdl is conserved.
@@ -275,4 +271,3 @@ for n1=1:length(CRUISE)
 
 
 end
-
